@@ -2,7 +2,6 @@ require("dotenv").config()
 const express = require("express")
 const cors = require("cors")
 const mongoose = require("mongoose")
-const {faker} = require("@faker-js/faker")
 const userRouter = require("./router/userRouter")
 const productRouter = require("./router/productRouter")
 const orderRouter = require("./router/orderRouter")
@@ -20,18 +19,6 @@ app.use(express.json())
 app.use("/api/user", userRouter)
 app.use("/api/product", productRouter)
 app.use("/api/checkout", orderRouter)
-
-app.get("/", async (req, res) => {
-  const prod = {
-    name: faker.commerce.productName(),
-        price: faker.commerce.price(),
-        image: faker.image.url(),
-        description: faker.lorem.sentence(),
-        category: faker.commerce.department(),
-        countInStock: faker.number.int({min:1, max: 20}),
-  }
-  res.send(prod)
-})
 
 app.listen(process.env.PORT, () => {
   console.log(`listening... on ${process.env.PORT}`)
