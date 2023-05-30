@@ -90,7 +90,7 @@ const successOrder = async (req, res) => {
     console.log(foundOrder)
     res.status(200).send({      
       orderData:foundOrder,
-      updatedUser: foundUser,
+      updatedUser: {user:foundUser, token:req.user.token},
       msg: "successful",
       orderId: razorpayOrderId,
       paymentId: razorpayPaymentId,
@@ -148,7 +148,7 @@ const codOrder = async (req, res) => {
     
     res.status(200).send({      
       orderData:foundOrder,
-      updatedUser: foundUser,
+      updatedUser: {user:foundUser, token:req.user.token},
       msg: "successful",
       orderId: orderCreationId,
     });

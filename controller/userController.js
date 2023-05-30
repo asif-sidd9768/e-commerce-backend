@@ -196,7 +196,6 @@ const addAddress = async (req, res) => {
     foundUser.addresses = [...foundUser.addresses, address]
     await address.save()
     await foundUser.save()
-    console.log(req.user)
     res.status(200).send({user:foundUser, token:req.user.token})
   }catch(error){
     res.send(error)
