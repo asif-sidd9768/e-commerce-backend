@@ -24,11 +24,22 @@ const createUser = async (req, res) => {
       passwordHash
     })
     await user.save()
-    res.send(user)
+    const userToken = {
+      email: user.email,
+      id:user._id
+    }
+  
+    const token = jwt.sign(userToken, process.env.SECRET, {expiresIn: "3 days"})
+    res.status(200).send({token, user})
   }catch(error){
-    res.send(error)
+    res.status(500).send(error)
   }
 }
+
+// const registerUser = async (req, res) => {
+//   const { name, email, password, confirmPassword } = req.body
+  
+// }
 
 const loginUser = async (req, res) => {
   const {email, password} = req.body
@@ -98,11 +109,14 @@ const addProductToCart = async (req, res) => {
     .populate("wishlist")
     .populate("browsedItems")
     const foundProd = await Product.findById(req.body.id)
+    if(foundProd.stockQuantity < 1){
+      return res.status(409).send("Out of Stock")
+    }
     const cart = new Cart({
       product:foundProd, quantity: 1
     })
     foundUser.cart = [...foundUser.cart, cart]
-    // console.log(foundUser)
+    console.log(foundUser)
     await cart.save()
     await foundUser.save()
     res.status(200).send(cart)
@@ -116,7 +130,11 @@ const updateCartItem = async (req, res) => {
   try {
     const updateAction = req.body.quantityAction
     const foundCartItem = await Cart.findById(req.params.itemId).populate("product")
+
     foundCartItem.quantity = updateAction === "increase" ? foundCartItem.quantity+1 : foundCartItem.quantity - 1
+    if(foundCartItem.quantity > foundCartItem.product.stockQuantity){
+      return res.status(409).json({message: "Stock limit exceeded"})
+    }
     await foundCartItem.save()
     const foundUser = await User.findById(req.user.id).populate({
       path: 'cart',

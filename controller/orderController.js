@@ -46,8 +46,17 @@ const successOrder = async (req, res) => {
         path: 'product',
         model: 'Product'
       }
-    }).populate("orders")
+    }).populate({
+      path: 'orders',
+      model: 'Order',
+      populate: {
+        path: 'products.product',
+        model: 'Product'
+      }
+    })
     .populate("addresses")
+    .populate("wishlist")
+    .populate("browsedItems")
     if(!foundUser){
       return res.status(404).send("User not found.")
     }
@@ -72,6 +81,13 @@ const successOrder = async (req, res) => {
     await foundUser.save()
     const foundOrder = await Order.findById(orderData.id).populate("products.product").populate("shippingAddress")
 
+    foundOrder.products.map(async orderItem => {
+      const foundProd = await Product.findById(orderItem.product.id)
+      foundProd.stockQuantity = foundProd.stockQuantity - orderItem.quantity
+      await foundProd.save()
+    })
+
+    console.log(foundOrder)
     res.status(200).send({      
       orderData:foundOrder,
       updatedUser: foundUser,
@@ -93,8 +109,17 @@ const codOrder = async (req, res) => {
         path: 'product',
         model: 'Product'
       }
-    }).populate("orders")
+    }).populate({
+      path: 'orders',
+      model: 'Order',
+      populate: {
+        path: 'products.product',
+        model: 'Product'
+      }
+    })
     .populate("addresses")
+    .populate("wishlist")
+    .populate("browsedItems")
     const orderCreationId = `order_${short.generate()}`
     const products = req.body.checkoutData.orderDetails.cartItems.map(item => ({
       product: item.product.id,
@@ -115,6 +140,12 @@ const codOrder = async (req, res) => {
     await foundUser.save()
     const foundOrder = await Order.findById(orderData.id).populate("products.product").populate("shippingAddress")
 
+    foundOrder.products.map(async orderItem => {
+      const foundProd = await Product.findById(orderItem.product.id)
+      foundProd.stockQuantity = foundProd.stockQuantity - orderItem.quantity
+      await foundProd.save()
+    })
+    
     res.status(200).send({      
       orderData:foundOrder,
       updatedUser: foundUser,
