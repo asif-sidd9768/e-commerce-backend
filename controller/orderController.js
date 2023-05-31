@@ -15,7 +15,7 @@ const createOrder = async (req,res) => {
       key_secret: process.env.RAZORPAY_KEY_SECRET
     })
 
-    const orderAmout = (req.body.checkoutData.checkoutTotal).toFixed(2)*100
+    const orderAmout = Number(req.body.checkoutData.checkoutTotal).toFixed(2)*100
     const options = {
       amount: orderAmout, // amount in smallest currency unit
       currency: "INR",
