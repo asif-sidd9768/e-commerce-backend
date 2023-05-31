@@ -23,6 +23,7 @@ const createOrder = async (req,res) => {
     }
 
     const order = await instance.orders.create(options);
+    console.log({options}, {order})
     if (!order) {
       return res.status(500).json({message: "Internal Server Error"});
     }
