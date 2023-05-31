@@ -4,6 +4,7 @@ const cors = require("cors")
 const mongoose = require("mongoose")
 const userRouter = require("./router/userRouter")
 const productRouter = require("./router/productRouter")
+const router = require("express").Router()
 const orderRouter = require("./router/orderRouter")
 const app = express()
 
@@ -14,6 +15,7 @@ mongoose.connect(process.env.MONGODB_URI).then(() => {
 })
 
 app.use(cors())
+router.use(cors())
 app.use(express.json())
 
 app.use("/api/user", userRouter)
