@@ -22,7 +22,7 @@ const createOrder = async (req,res) => {
       receipt: uuid.v4(),
     }
 
-    console.log({options}, {order})
+    // console.log({options}, {order})
     const order = await instance.orders.create(options);
     if (!order) {
       return res.status(500).json({message: "Internal Server Error"});
