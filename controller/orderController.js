@@ -15,17 +15,21 @@ const createOrder = async (req,res) => {
       key_secret: process.env.RAZORPAY_KEY_SECRET
     })
 
+    const orderAmout = req.body.checkoutData.checkoutTotal*100
     const options = {
-      amount: req.body.checkoutData.checkoutTotal*100, // amount in smallest currency unit
+      amount: orderAmout.toFixed(0), // amount in smallest currency unit
       currency: "INR",
       receipt: uuid.v4(),
     }
 
     const order = await instance.orders.create(options);
-    if (!order) return res.status(500).json({message: "Internal Server Error"});
+    if (!order) {
+      return res.status(500).json({message: "Internal Server Error"});
+    }
 
     res.send(order)
   }catch(error){
+    console.log(error)
     res.status(500).json({message: error.message})
   }
 }
@@ -86,7 +90,6 @@ const successOrder = async (req, res) => {
       await foundProd.save()
     })
 
-    console.log(foundOrder)
     res.status(200).send({      
       orderData:foundOrder,
       updatedUser: {user:foundUser, token:req.user.token},
