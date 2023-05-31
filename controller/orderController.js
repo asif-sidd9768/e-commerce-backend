@@ -15,15 +15,15 @@ const createOrder = async (req,res) => {
       key_secret: process.env.RAZORPAY_KEY_SECRET
     })
 
-    const orderAmout = req.body.checkoutData.checkoutTotal*100
+    const orderAmout = (req.body.checkoutData.checkoutTotal).toFixed(2)*100
     const options = {
-      amount: 50000, // amount in smallest currency unit
+      amount: orderAmout, // amount in smallest currency unit
       currency: "INR",
       receipt: uuid.v4(),
     }
 
-    const order = await instance.orders.create(options);
     console.log({options}, {order})
+    const order = await instance.orders.create(options);
     if (!order) {
       return res.status(500).json({message: "Internal Server Error"});
     }
