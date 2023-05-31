@@ -17,7 +17,7 @@ const createOrder = async (req,res) => {
 
     const orderAmout = req.body.checkoutData.checkoutTotal*100
     const options = {
-      amount: orderAmout.toFixed(0), // amount in smallest currency unit
+      amount: 50000, // amount in smallest currency unit
       currency: "INR",
       receipt: uuid.v4(),
     }
