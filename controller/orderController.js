@@ -23,6 +23,8 @@ const createOrder = async (req,res) => {
       receipt: uuid.v4(),
     }
 
+    console.log('order amount === ', orderAmout)
+
     console.log({options})
     const order = await instance.orders.create(options);
     if (!order) {
