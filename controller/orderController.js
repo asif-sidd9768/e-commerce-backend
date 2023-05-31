@@ -16,13 +16,14 @@ const createOrder = async (req,res) => {
     })
 
     const orderAmout = Number(req.body.checkoutData.checkoutTotal).toFixed(2)*100
+
     const options = {
-      amount: orderAmout, // amount in smallest currency unit
+      amount: 50000, // amount in smallest currency unit
       currency: "INR",
       receipt: uuid.v4(),
     }
 
-    // console.log({options}, {order})
+    console.log({options})
     const order = await instance.orders.create(options);
     if (!order) {
       return res.status(500).json({message: "Internal Server Error"});
