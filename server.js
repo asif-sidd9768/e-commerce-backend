@@ -14,13 +14,7 @@ mongoose.connect(process.env.MONGODB_URI).then(() => {
   console.log('failed to connect to db== ', error)
 })
 
-app.use(cors({
-  origin: 'https://freakyfinds.vercel.app', //Or whatever you front-end domain is
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true, // This allows the session cookie to be sent back and forth
-}));
-// router.use(cors())
+app.use(cors())
 app.use(express.json())
 
 app.use("/api/user", userRouter)
