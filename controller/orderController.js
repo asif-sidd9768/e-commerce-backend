@@ -10,7 +10,6 @@ const Cart = require("../models/Cart");
 
 const createOrder = async (req,res) => {
   try{
-    console.log('obj == ', req.body.checkoutData.shippingAddress)
     const instance = new Razorpay({
       key_id: process.env.RAZORPAY_KEY_ID,
       key_secret: process.env.RAZORPAY_KEY_SECRET
@@ -23,11 +22,11 @@ const createOrder = async (req,res) => {
     }
 
     const order = await instance.orders.create(options);
-    if (!order) return res.status(500).send("Some error occured");
+    if (!order) return res.status(500).json({message: "Internal Server Error"});
 
     res.send(order)
   }catch(error){
-    res.status(500).send(error)
+    res.status(500).json({message: error.message})
   }
 }
 
@@ -58,7 +57,7 @@ const successOrder = async (req, res) => {
     .populate("wishlist")
     .populate("browsedItems")
     if(!foundUser){
-      return res.status(404).send("User not found.")
+      return res.status(404).json({message:"User not found"})
     }
 
     const products = req.body.checkoutData.orderDetails.cartItems.map(item => ({
@@ -96,7 +95,7 @@ const successOrder = async (req, res) => {
       paymentId: razorpayPaymentId,
     });
   }catch(error){
-    res.status(500).send(error)
+    res.status(500).json({message: error.message})
   }
 }
 
@@ -153,7 +152,7 @@ const codOrder = async (req, res) => {
       orderId: orderCreationId,
     });
   }catch(error){
-    res.status(500).send(error)
+    res.status(500).json({message: error.message})
   }
 }
 

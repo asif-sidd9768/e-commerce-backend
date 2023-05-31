@@ -3,8 +3,6 @@ const User = require("../models/User")
 
 const addProductToWishlist = async (req, res) => {
   try {
-    console.log(req.body)
-    console.log(req.body)
     const foundUser = await User.findById(req.user.id).populate({
       path: 'cart',
       populate: {
@@ -26,7 +24,7 @@ const addProductToWishlist = async (req, res) => {
     await foundUser.save()
     res.status(200).send(foundUser)
   }catch(error){
-    res.status(500).send(error)
+    res.status(500).json({message: error.message})
   }
 }
 
@@ -52,7 +50,7 @@ const deleteProductFromWishlist = async (req, res) => {
     await foundUser.save()
     res.send(foundUser)
   }catch(error){
-    console.log(error)
+    res.status(500).json({message: error.message})
   }
 }
 

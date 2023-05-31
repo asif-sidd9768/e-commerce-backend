@@ -5,7 +5,7 @@ const addProductToBrowsed = async (req, res) => {
   try{
     const foundUser = await User.findById(req.params.userId).populate("browsedItems")
     if(!foundUser){
-      return res.status(404).send("User not found.")
+      return res.status(404).json({message:"User not found."})
     }
     const foundProduct = await Product.findById(req.params.itemId)
     const foundBrowsedItem = foundUser.browsedItems.find(({category}) => category === foundProduct.category)
@@ -20,8 +20,7 @@ const addProductToBrowsed = async (req, res) => {
     await foundUser.save()
     res.send(foundUser?.browsedItems)
   }catch(error){
-    console.log(error)
-    res.status(500).send(error)
+    res.status(500).json({message: error.message})
   }
 }
 
