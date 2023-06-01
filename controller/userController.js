@@ -204,6 +204,35 @@ const addAddress = async (req, res) => {
   }
 }
 
+const editAddress = async (req, res) => {
+  try{
+    console.log(req.body)
+    const { id, ...updatedFields } = req.body
+    const foundAddress = await Address.findByIdAndUpdate(id, updatedFields, {new: true})
+    const foundUser = await User.findById(req.user.id).populate({
+      path: 'cart',
+      populate: {
+        path: 'product',
+        model: 'Product'
+      }
+    }).populate({
+      path: 'orders',
+      model: 'Order',
+      populate: {
+        path: 'products.product',
+        model: 'Product'
+      }
+    })
+    .populate("addresses")
+    .populate("wishlist")
+    .populate("browsedItems")
+    // foundUser.addresses = foundUser.addresses.map(address => address.id === id ? foundAddress : address  )
+    res.status(200).send(foundAddress)
+  }catch(error){
+    res.status(500).json({message: error.message})
+  }
+}
+
 const deleteAddress = async (req, res) => {
   try{
     const foundUser = await User.findById(req.user.id).populate({
@@ -240,5 +269,6 @@ module.exports = {
   updateCartItem,
   deleteCartProduct,
   addAddress,
+  editAddress,
   deleteAddress
 }
